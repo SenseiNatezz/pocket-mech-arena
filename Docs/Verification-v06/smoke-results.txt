@@ -1,0 +1,60 @@
+PASS Frame-rate-independent steering and dash displacement at 30 FPS
+PASS Frame-rate-independent steering and dash displacement at 60 FPS
+PASS Frame-rate-independent steering and dash displacement at 120 FPS
+PASS Play opens mission selection
+PASS Mission selection opens loadout confirmation
+PASS Deploy button starts mission
+PASS Battlefield has an actual triangulated ground plane
+PASS Old flat arena picture is hidden during gameplay
+PASS Camera uses an oblique orthographic view
+PASS Existing mech artwork uses angled-view presentation
+PASS Touch joystick produces movement vector
+PASS Joystick moves mech
+PASS Touch release resets movement
+PASS Releasing movement brakes promptly without sliding
+PASS Dash button grants invulnerability
+PASS Dash cooldown prevents repeat activation
+PASS Actual dash travels the specified 3.3 units and samples current input
+PASS Faster firing preserves the 200 base damage-per-second budget
+PASS Pause freezes mission and movement
+PASS XP opens three upgrade cards and pauses
+PASS First level offers Triple Shot
+PASS Upgrade selection resumes gameplay
+PASS All stat upgrades apply
+PASS Weapon upgrades attach visible equipment
+PASS Fast projectile swept collision
+PASS Shield reduces frontal damage only
+PASS Overflow XP produces sequential choices
+PASS Assault Striker and all mission phases trigger
+PASS Boss spawns near end and can be defeated
+PASS Five-minute assisted run reaches Mission Complete with rewards
+PASS Sustained combat generates player/enemy shots, hits and kills
+METRICS shots=4802, enemyShots=67, hits=1914, kills=261, level=13, frames=5978
+PASS Rewards cannot be claimed twice
+PASS Reward Continue opens Back to Base replay flow
+PASS Restart clears progression and restores hull
+PASS Hull depletion opens failure screen
+PASS Failed extraction grants no victory parts
+PASS Continue returns to home without a frozen time scale
+PASS Garage inspection returns to deploy screen
+PASS Locked equipment cannot be equipped
+PASS Insufficient funds block purchases and tuning
+PASS Buy, equip and tune deduct exact costs
+PASS Railgun and tuning modify actual starting weapon stats
+PASS Bonus booster drop unlocks equipment
+PASS Duplicate loot converts to two parts
+PASS Equipment, tuning and currency survive save serialization
+PASS Veteran selection increases enemy hull by 30 percent
+PASS Veteran mission awards increased credits
+PASS Area selection preserves Veteran difficulty
+PASS Frostline deploy uses its own opening roster
+PASS Frostline deploy switches the actual arena texture
+PASS Rail lock-on fires twin bolts and Cryo Mortar executes paired blasts
+PASS Glacier Colossus spawns, cycles its three attacks and registers boss defeat
+PASS Frostline five-minute extraction awards its mission reward
+PASS New area and existing equipment survive serialization together
+PASS Legacy profiles keep credits and difficulty and default to Arena A-1
+PASS Frostline Veteran awards 2000 credits
+PASS Switching back restores original environment and roster
+PASS Verification profile cannot overwrite real player saves
+NOTE Full-run test restores hull and forces any surviving boss defeat at 04:58; this is a progression test, not difficulty validation.
