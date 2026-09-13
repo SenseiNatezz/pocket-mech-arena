@@ -41,11 +41,18 @@ namespace PocketMech
         void Awake()
         {
             Instance = this;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            var args = new string[0];
+#else
             var args = System.Environment.GetCommandLineArgs();
+#endif
             TestMode = System.Array.IndexOf(args, "-pmaSmoke") >= 0;
             VerificationMode = TestMode || System.Array.IndexOf(args, "-pmaCapture") >= 0 || System.Array.IndexOf(args, "-pmaMotion") >= 0;
             Headless = System.Array.IndexOf(args, "-nographics") >= 0;
-            Application.targetFrameRate = 60; Screen.orientation = ScreenOrientation.Portrait;
+            Application.targetFrameRate = 60;
+#if !UNITY_WEBGL || UNITY_EDITOR
+            Screen.orientation = ScreenOrientation.Portrait;
+#endif
             if (balance == null) balance = Resources.Load<Balance>("RunBalance");
             Profile = PilotProfile.Load(VerificationMode);
             Visuals.Initialize();
@@ -75,7 +82,7 @@ namespace PocketMech
             if (Input.GetKeyDown(KeyCode.Escape)) TogglePause();
             if (State != RunState.Playing) return;
             Elapsed = Mathf.Min(balance.runSeconds, Elapsed + Time.deltaTime);
-            if (!warning && Elapsed >= 225) { warning = true; UI.Announce("WARNING", "HEAVY ENEMY APPROACHING — prepare for 04:20.", 7); }
+            if (!warning && Elapsed >= 225) { warning = true; UI.Announce("WARNING", "HEAVY ENEMY APPROACHING  -  prepare for 04:20.", 7); }
             if (!BossSpawned && Elapsed >= balance.bossArrival) { BossSpawned = true; Boss = Spawn(EnemyKind.Boss, new Vector2(0, 6.5f)); UI.Announce("HEAVY SIEGE WALKER", "Break its core. Keep moving.", 4); }
             int phase = Elapsed < 5 ? 0 : Elapsed < 11 ? 1 : Elapsed < 20 ? 2 : Elapsed < 45 ? 3 : Elapsed < 90 ? 4 : Elapsed < 135 ? 5 : Elapsed < 180 ? 6 : Elapsed < 225 ? 7 : 8;
             if (phase != Phase)
