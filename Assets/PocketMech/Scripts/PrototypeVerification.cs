@@ -16,7 +16,7 @@ namespace PocketMech
         void Error(string message, string stack, LogType kind) { if (kind == LogType.Exception || kind == LogType.Error) { failed = true; checks.Add("RUNTIME ERROR " + message); } }
         IEnumerator Start()
         {
-            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v05")); Directory.CreateDirectory(folder);
+            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v06")); Directory.CreateDirectory(folder);
             Application.logMessageReceived += Error;
             yield return null;
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-pmaMotion") >= 0) { yield return MotionPreview(); yield break; }
@@ -35,6 +35,10 @@ namespace PocketMech
             Check(g.UI.ConfirmButton != null, "Mission selection opens loadout confirmation");
             g.UI.ConfirmButton.onClick.Invoke(); yield return null;
             Check(g.State == RunState.Playing, "Deploy button starts mission");
+            Check(g.Battlefield.Surface != null && g.Battlefield.Surface.vertexCount == 96, "Battlefield has an actual triangulated ground plane");
+            Check(!GameObject.Find("Painted environment").GetComponent<SpriteRenderer>().enabled, "Old flat arena picture is hidden during gameplay");
+            Check(Vector3.Dot(Camera.main.transform.forward, Vector3.forward) < .85f && Camera.main.orthographic, "Camera uses an oblique orthographic view");
+            Check(g.Player.GetComponent<ActorPresentation>() != null, "Existing mech artwork uses angled-view presentation");
             var stick = g.UI.Joystick;
             Canvas.ForceUpdateCanvases();
             var point = RectTransformUtility.WorldToScreenPoint(null, stick.transform.TransformPoint(new Vector3(40, 0, 0)));
@@ -121,11 +125,14 @@ namespace PocketMech
             profile.mission = 0; g.UI.MissionButton.onClick.Invoke(); yield return null; g.UI.ConfirmButton.onClick.Invoke(); yield return null;
             Check(g.Enemies.TrueForAll(e => e.Kind == EnemyKind.IceSkimmer), "Frostline deploy uses its own opening roster");
             Check(GameObject.Find("Painted environment").GetComponent<SpriteRenderer>().sprite.name == "FrostArena", "Frostline deploy switches the actual arena texture");
+            // Isolate attack execution from the equipped railgun killing the test machines first.
+            p.enabled = false;
             var rail = g.Spawn(EnemyKind.RailSentinel, new Vector2(-3, 6));
             var mortar = g.Spawn(EnemyKind.CryoMortar, new Vector2(3, 6));
             p.Automated = true; p.DebugMovement = Vector2.zero;
             for (int i = 0; i < 120; i++) { p.Heal(p.MaxHealth); if (g.State == RunState.Upgrade) g.Choose(0); yield return null; }
             Check(rail != null && rail.SpecialAttacks > 0 && mortar != null && mortar.SpecialAttacks > 0, "Rail lock-on fires twin bolts and Cryo Mortar executes paired blasts");
+            p.enabled = true;
             // A second complete assisted run checks the distinct roster, boss and extraction.
             bool frostBossSeen = false; bool frostBossAttacked = false; frames = 0;
             while (g.State != RunState.Won && g.State != RunState.Lost && frames++ < 9000) {

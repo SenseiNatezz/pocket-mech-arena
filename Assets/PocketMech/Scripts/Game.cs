@@ -11,6 +11,7 @@ namespace PocketMech
         public PlayerMech Player { get; private set; }
         public ArenaUI UI { get; private set; }
         public Transform World { get; private set; }
+        public RaisedBattlefield Battlefield { get; private set; }
         public readonly List<Enemy> Enemies = new List<Enemy>();
         public readonly List<XpPickup> Pickups = new List<XpPickup>();
         public float Elapsed { get; private set; }
@@ -59,8 +60,10 @@ namespace PocketMech
             Profile = PilotProfile.Load(VerificationMode);
             Visuals.Initialize();
             World = new GameObject("Runtime Entities").transform;
+            Battlefield = new GameObject("Raised battlefield").AddComponent<RaisedBattlefield>();
             var prefab = Resources.Load<GameObject>("Prefabs/PlayerMech");
             Player = Instantiate(prefab, World).GetComponent<PlayerMech>(); Player.Init(balance);
+            Player.gameObject.AddComponent<ActorPresentation>();
             UI = gameObject.AddComponent<ArenaUI>(); UI.Build();
             gameObject.AddComponent<SoundBank>();
             if (VerificationMode) gameObject.AddComponent<PrototypeVerification>();
@@ -72,6 +75,8 @@ namespace PocketMech
             var renderer = environment.GetComponent<SpriteRenderer>();
             renderer.sprite = Resources.Load<Sprite>("Illustrated/" + Mission.Background);
             renderer.transform.localScale = new Vector3(13f / renderer.sprite.bounds.size.x, 23.12f / renderer.sprite.bounds.size.y, 1);
+            renderer.enabled = false;
+            Battlefield.Rebuild(Frostline);
         }
         public void StartRun()
         {
@@ -156,7 +161,7 @@ namespace PocketMech
             }
             var prefab = Resources.Load<GameObject>("Prefabs/" + kind);
             var e = Instantiate(prefab, p, Quaternion.identity, World).GetComponent<Enemy>();
-            e.Init(kind, Elapsed); Enemies.Add(e); return e;
+            e.Init(kind, Elapsed); e.gameObject.AddComponent<ActorPresentation>(); Enemies.Add(e); return e;
         }
         public Enemy Nearest(Vector2 p, float range = 15)
         {
@@ -164,7 +169,12 @@ namespace PocketMech
             foreach (var e in Enemies) if (e != null && e.Alive) { float n = ((Vector2)e.transform.position - p).sqrMagnitude; if (n < d) { best = e; d = n; } }
             return best;
         }
-        public Vector2 Clamp(Vector2 p, float margin = .6f) => new Vector2(Mathf.Clamp(p.x, -balance.arenaHalfSize.x + margin, balance.arenaHalfSize.x - margin), Mathf.Clamp(p.y, -balance.arenaHalfSize.y + margin, balance.arenaHalfSize.y - margin));
+        public Vector2 Clamp(Vector2 p, float margin = .6f)
+        {
+            p = new Vector2(Mathf.Clamp(p.x, -balance.arenaHalfSize.x + margin, balance.arenaHalfSize.x - margin), Mathf.Clamp(p.y, -balance.arenaHalfSize.y + margin, balance.arenaHalfSize.y - margin));
+            float edge = Mathf.Abs(p.x) / Mathf.Max(1, 8.2f-margin) + Mathf.Abs(p.y) / Mathf.Max(1,10.5f-margin);
+            return edge > 1 ? p / edge : p;
+        }
         public void EnemyKilled(Enemy e)
         {
             Kills++; Enemies.Remove(e);
