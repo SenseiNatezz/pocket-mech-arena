@@ -14,7 +14,7 @@ namespace PocketMech
         public Button ContinueButton { get; private set; }
         public Button[] UpgradeButtons { get; private set; }
         RectTransform safe, overlay, hud;
-        Text timer, health, level, dash, wave, banner, bannerSub;
+        Text timer, health, level, dash, wave, banner, bannerSub, bossName;
         Image hpFill, xpFill, bossFill;
         GameObject bossPanel;
         float announceUntil;
@@ -41,7 +41,7 @@ namespace PocketMech
             level = Label(hud, "LV 01", 13, Vector2.zero, new Vector2(80, 25), Color.white, true); Place(level.rectTransform, new Vector2(.5f, 1), new Vector2(-207, -109), new Vector2(80, 25));
             timer = Label(hud, "00:00 / 05:00", 14, Vector2.zero, new Vector2(155, 25), Color.white, true); Place(timer.rectTransform, new Vector2(.5f, 1), new Vector2(170, -109), new Vector2(155, 25));
             bossPanel = Panel("Boss", hud, new Color(.13f, .1f, .13f)).gameObject; Place((RectTransform)bossPanel.transform, new Vector2(.5f, 1), new Vector2(0, -152), new Vector2(455, 49));
-            Label(bossPanel.transform, "HEAVY SIEGE WALKER", 16, new Vector2(0, 8), new Vector2(440, 23), Color.white, true);
+            bossName = Label(bossPanel.transform, "HEAVY SIEGE WALKER", 16, new Vector2(0, 8), new Vector2(440, 23), Color.white, true);
             bossFill = Bar(bossPanel.transform, new Vector2(0, -13), new Vector2(414, 7), Visuals.Red);
             var joy = Panel("Movement Stick", hud, new Color(.29f, .39f, .5f, .6f), false); joy.GetComponent<Image>().sprite = Visuals.Disc;
             Place(joy, new Vector2(0, 0), new Vector2(109, 112), new Vector2(162, 162)); Border(joy, light, 2);
@@ -68,6 +68,7 @@ namespace PocketMech
             wave.text = $"WAVE {Mathf.Min(5, (int)(g.Elapsed / 60) + 1)} / 5\nEnemies: {g.Enemies.Count}";
             dash.text = g.Player.DashRemaining > 0 ? g.Player.DashRemaining.ToString("0.0") : ">>";
             dash.fontSize = g.Player.DashRemaining > 0 ? 30 : 45; DashButton.interactable = g.Player.DashRemaining <= 0 && g.State == RunState.Playing;
+            bossName.text = g.Mission.BossName;
             bossPanel.SetActive(g.Boss != null && g.Boss.Alive); if (g.Boss != null) bossFill.fillAmount = g.Boss.Health / g.Boss.MaxHealth;
             if (Time.time > announceUntil) { banner.text = ""; bannerSub.text = ""; }
         }
@@ -181,18 +182,25 @@ namespace PocketMech
         }
         public void Missions()
         {
-            ClearMenu(); Backdrop("Arena", .55f); var p = Game.Instance.Profile;
-            Label(overlay, "SELECT MISSION", 36, new Vector2(0,386), new Vector2(510,60), Color.white, true);
-            Label(overlay, "ARENA A-1", 43, new Vector2(0,288), new Vector2(510,70), gold, true);
-            Label(overlay, "5-MINUTE SURVIVAL / INDUSTRIAL DISTRICT", 17, new Vector2(0,227), new Vector2(510,45), Visuals.Blue, true);
-            ButtonAt(overlay, "STANDARD", new Vector2(.5f,.5f), new Vector2(-126,136), new Vector2(239,57), () => { p.mission = 0; p.Save(); Missions(); }, p.mission == 0);
-            ButtonAt(overlay, "VETERAN", new Vector2(.5f,.5f), new Vector2(126,136), new Vector2(239,57), () => { p.mission = 1; p.Save(); Missions(); }, p.mission == 1);
-            Label(overlay, p.mission == 0 ? "STANDARD / Recommended power: 250" : "VETERAN / Enemy hull +30% / More credits", 20, new Vector2(0,59), new Vector2(500,50), gold, true);
-            Label(overlay, "Scout / Shooter / Bomber / Shield / Rush\n\n02:40  Elite Assault Striker\n03:45  Heavy enemy warning\n04:20  Heavy Siege Walker\n05:00  Extraction — boss must be defeated", 20, new Vector2(0,-86), new Vector2(500,239), Color.white);
-            Label(overlay, $"VICTORY: {(p.mission == 1 ? 1750 : 1250):N0} credits / 4 parts / 12 weapon XP\n60% bonus: booster, rifle mod or armor scrap", 18, new Vector2(0,-263), new Vector2(495,75), light);
+            var g = Game.Instance; var p = g.Profile; var mission = g.Mission;
+            ClearMenu(); Backdrop(mission.Background, .66f);
+            Label(overlay, "SELECT MISSION", 34, new Vector2(0,414), new Vector2(510,50), Color.white, true);
+            for (int i = 0; i < PocketMech.Missions.All.Length; i++) {
+                int area = i;
+                var b = ButtonAt(overlay, i == 0 ? "ARENA A-1" : "FROSTLINE", new Vector2(.5f,.5f), new Vector2(i == 0 ? -126 : 126, 342), new Vector2(239,58), () => SelectArea(area), p.area == i);
+                b.GetComponentInChildren<Text>().fontSize = 23;
+            }
+            Label(overlay, mission.Name, 32, new Vector2(0,265), new Vector2(510,60), gold, true);
+            Label(overlay, "5-MINUTE SURVIVAL / " + mission.Subtitle, 16, new Vector2(0,217), new Vector2(510,40), Visuals.Blue, true);
+            ButtonAt(overlay, "STANDARD", new Vector2(.5f,.5f), new Vector2(-126,145), new Vector2(239,53), () => { p.mission = 0; p.Save(); Missions(); }, p.mission == 0);
+            ButtonAt(overlay, "VETERAN", new Vector2(.5f,.5f), new Vector2(126,145), new Vector2(239,53), () => { p.mission = 1; p.Save(); Missions(); }, p.mission == 1);
+            Label(overlay, p.mission == 0 ? "STANDARD / Recommended power: 250" : "VETERAN / Enemy hull +30% / More credits", 18, new Vector2(0,86), new Vector2(500,40), gold, true);
+            Label(overlay, mission.Briefing, 19, new Vector2(0,-64), new Vector2(500,235), Color.white);
+            Label(overlay, $"VICTORY: {mission.Reward(p.mission):N0} credits / 4 parts / 12 weapon XP\n60% bonus: booster, rifle mod or armor scrap", 18, new Vector2(0,-242), new Vector2(495,75), light);
             MissionButton = ButtonAt(overlay, "START MISSION >", new Vector2(.5f,.5f), new Vector2(0,-350), new Vector2(465,62), ShowLoadout, true);
             ButtonAt(overlay, "< BASE", new Vector2(.5f,.5f), new Vector2(0,-424), new Vector2(465,50), ShowBase);
         }
+        public void SelectArea(int area) { Game.Instance.Profile.area = Mathf.Clamp(area, 0, PocketMech.Missions.All.Length - 1); Game.Instance.Profile.Save(); Missions(); }
         public void ShowLoadout()
         {
             ClearMenu(); Backdrop("Hero", .55f); var g = Game.Instance; var p = g.Profile; g.Player.Init(g.balance);
@@ -201,7 +209,7 @@ namespace PocketMech
             var stats = Panel("Starting stats", overlay, new Color(.06f,.14f,.22f,.94f)); Place(stats,new Vector2(.5f,.5f),new Vector2(0,209),new Vector2(482,163));
             Label(stats, $"HULL {g.Player.MaxHealth:0}      SPEED {g.Player.Speed:0.0}\nDAMAGE {g.Player.Damage:0}      FIRE {g.Player.FireInterval:0.00}s\nDASH {g.Player.DashCooldown:0.0}s      CRIT {g.Player.CritChance:P0}", 23, Vector2.zero, new Vector2(460,145), Color.white, true);
             for (int slot=0;slot<5;slot++) { int s=slot; int id=p.equipped[slot]; var b=ButtonAt(overlay, Equipment.Slots[slot]+" / "+Equipment.Items[id].name, new Vector2(.5f,.5f),new Vector2(0,67-slot*57),new Vector2(480,48),()=> {garageSlot=s; GaragePage();}); b.GetComponentInChildren<Text>().fontSize=19; }
-            Label(overlay, $"{Equipment.Colors[p.color]} / Arena A-1 / {(p.mission==1 ? "Veteran" : "Standard")}\nRun upgrades reset; equipment stays with you.", 17, new Vector2(0,-244),new Vector2(495,60),light);
+            Label(overlay, $"{Equipment.Colors[p.color]} / {g.Mission.Name} / {(p.mission==1 ? "Veteran" : "Standard")}\nRun upgrades reset; equipment stays with you.", 17, new Vector2(0,-244),new Vector2(495,60),light);
             ConfirmButton=ButtonAt(overlay,"CONFIRM & DEPLOY",new Vector2(.5f,.5f),new Vector2(0,-347),new Vector2(465,65),g.StartRun,true);
             ButtonAt(overlay,"< MISSION SELECT",new Vector2(.5f,.5f),new Vector2(0,-425),new Vector2(465,50),Missions);
         }
@@ -216,7 +224,7 @@ namespace PocketMech
             ButtonAt(overlay,"SELECT ANOTHER MISSION",new Vector2(.5f,.5f),new Vector2(0,-200),new Vector2(460,62),Missions);
             ButtonAt(overlay,"HOME",new Vector2(.5f,.5f),new Vector2(0,-370),new Vector2(460,56),ShowState);
         }
-        void Mechs() => Info("VX-01 RANGER", "SMALL MECHS. BIG MOMENTS.\n\nYour agile starter mech is ready to deploy.\n\nCustomize five equipment slots and paint in the garage.\nOne playable mech and one arena in this prototype.", ShowState);
+        void Mechs() => Info("VX-01 RANGER", "SMALL MECHS. BIG MOMENTS.\n\nYour agile starter mech is ready to deploy.\n\nCustomize five equipment slots and paint in the garage.\nOne playable mech and two arenas in this prototype.", ShowState);
         void Info(string heading, string copy, UnityEngine.Events.UnityAction back, bool deploy = false)
         {
             ClearMenu(); Backdrop("Hero", .76f); Label(overlay, heading, 35, new Vector2(0, 270), new Vector2(505, 85), gold, true);

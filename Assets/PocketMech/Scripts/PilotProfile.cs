@@ -7,7 +7,7 @@ namespace PocketMech
     [Serializable]
     public sealed class PilotProfile
     {
-        public int credits, parts, weaponXp, wins, mission, color;
+        public int credits, parts, weaponXp, wins, mission, color, area;
         public int[] equipped = { 0, 2, 4, 6, 9 };
         public bool[] owned = { true, false, true, false, true, false, true, false, false, true, false };
         public int[] tuning = new int[11];
@@ -29,7 +29,7 @@ namespace PocketMech
             if (equipped == null || equipped.Length != 5) equipped = (int[])starter.Clone();
             for (int s = 0; s < 5; s++) { owned[starter[s]] = true; int id = equipped[s]; if (id < 0 || id >= owned.Length || !owned[id] || Equipment.Items[id].slot != s) equipped[s] = starter[s]; }
             for (int i = 0; i < tuning.Length; i++) tuning[i] = Mathf.Clamp(tuning[i], 0, 3);
-            credits = Mathf.Max(0, credits); parts = Mathf.Max(0, parts); weaponXp = Mathf.Max(0, weaponXp); mission = Mathf.Clamp(mission, 0, 1); color = Mathf.Clamp(color, 0, 3);
+            credits = Mathf.Max(0, credits); parts = Mathf.Max(0, parts); weaponXp = Mathf.Max(0, weaponXp); mission = Mathf.Clamp(mission, 0, 1); area = Mathf.Clamp(area, 0, Missions.All.Length - 1); color = Mathf.Clamp(color, 0, 3);
         }
         public void Save() { if (!volatileOnly) { PlayerPrefs.SetString(SaveKey, JsonUtility.ToJson(this)); PlayerPrefs.Save(); } }
         public bool Equip(int id)

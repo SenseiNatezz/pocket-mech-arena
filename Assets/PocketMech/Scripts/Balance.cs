@@ -13,7 +13,7 @@ namespace PocketMech
         public int maxEnemies = 65;
     }
     public enum RunState { Briefing, Playing, Upgrade, Paused, Won, Lost }
-    public enum EnemyKind { Scout, Shooter, Bomber, Shield, Rush, Boss, Elite }
+    public enum EnemyKind { Scout, Shooter, Bomber, Shield, Rush, Boss, Elite, IceSkimmer, RailSentinel, CryoMortar, GlacierColossus }
     public enum UpgradeKind { TripleShot, Piercing, AttackSpeed, Damage, Thrusters, DashCooldown, SideCannons, MissilePod, Crit, Plating, Barrier, NanoBots, SpreadAmplifier, WeaponOverclock, HeavyArmor }
     public static class Upgrades
     {

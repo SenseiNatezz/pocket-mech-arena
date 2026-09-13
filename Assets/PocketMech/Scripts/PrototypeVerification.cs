@@ -16,7 +16,7 @@ namespace PocketMech
         void Error(string message, string stack, LogType kind) { if (kind == LogType.Exception || kind == LogType.Error) { failed = true; checks.Add("RUNTIME ERROR " + message); } }
         IEnumerator Start()
         {
-            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v04")); Directory.CreateDirectory(folder);
+            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v05")); Directory.CreateDirectory(folder);
             Application.logMessageReceived += Error;
             yield return null;
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-pmaMotion") >= 0) { yield return MotionPreview(); yield break; }
@@ -116,6 +116,34 @@ namespace PocketMech
             profile.mission = 1; g.StartRun(); var veteran = g.Spawn(EnemyKind.Scout, new Vector2(0,8));
             Check(Mathf.Abs(veteran.MaxHealth - 234) < .01f, "Veteran selection increases enemy hull by 30 percent");
             g.Finish(true); Check(g.Credits == 1750, "Veteran mission awards increased credits");
+            g.GoHome(); g.UI.SelectArea(1); yield return null;
+            Check(profile.area == 1 && profile.mission == 1, "Area selection preserves Veteran difficulty");
+            profile.mission = 0; g.UI.MissionButton.onClick.Invoke(); yield return null; g.UI.ConfirmButton.onClick.Invoke(); yield return null;
+            Check(g.Enemies.TrueForAll(e => e.Kind == EnemyKind.IceSkimmer), "Frostline deploy uses its own opening roster");
+            Check(GameObject.Find("Painted environment").GetComponent<SpriteRenderer>().sprite.name == "FrostArena", "Frostline deploy switches the actual arena texture");
+            var rail = g.Spawn(EnemyKind.RailSentinel, new Vector2(-3, 6));
+            var mortar = g.Spawn(EnemyKind.CryoMortar, new Vector2(3, 6));
+            p.Automated = true; p.DebugMovement = Vector2.zero;
+            for (int i = 0; i < 120; i++) { p.Heal(p.MaxHealth); if (g.State == RunState.Upgrade) g.Choose(0); yield return null; }
+            Check(rail != null && rail.SpecialAttacks > 0 && mortar != null && mortar.SpecialAttacks > 0, "Rail lock-on fires twin bolts and Cryo Mortar executes paired blasts");
+            // A second complete assisted run checks the distinct roster, boss and extraction.
+            bool frostBossSeen = false; bool frostBossAttacked = false; frames = 0;
+            while (g.State != RunState.Won && g.State != RunState.Lost && frames++ < 9000) {
+                if (g.State == RunState.Upgrade) { g.Choose(0); yield return null; continue; }
+                p.Heal(p.MaxHealth); p.DebugMovement = new Vector2(Mathf.Sin(g.Elapsed), Mathf.Cos(g.Elapsed));
+                if (g.Boss != null) { frostBossSeen |= g.Boss.Kind == EnemyKind.GlacierColossus; frostBossAttacked |= g.Boss.SpecialAttacks >= 3; }
+                if (g.Elapsed >= 298 && g.Boss != null && g.Boss.Alive) g.Boss.Hurt(999999, Vector2.up, false);
+                yield return null;
+            }
+            Check(frostBossSeen && frostBossAttacked && g.BossDefeated, "Glacier Colossus spawns, cycles its three attacks and registers boss defeat");
+            Check(g.State == RunState.Won && g.Elapsed == 300 && g.Credits == 1500, "Frostline five-minute extraction awards its mission reward");
+            restored = JsonUtility.FromJson<PilotProfile>(JsonUtility.ToJson(profile)); restored.Validate();
+            Check(restored.area == 1 && restored.equipped[3] == 8, "New area and existing equipment survive serialization together");
+            var legacy = JsonUtility.FromJson<PilotProfile>("{\"credits\":321,\"mission\":1}"); legacy.Validate();
+            Check(legacy.area == 0 && legacy.mission == 1 && legacy.credits == 321, "Legacy profiles keep credits and difficulty and default to Arena A-1");
+            profile.mission = 1; g.StartRun(); g.Finish(true); Check(g.Credits == 2000, "Frostline Veteran awards 2000 credits");
+            profile.area = 0; g.StartRun(); yield return null;
+            Check(GameObject.Find("Painted environment").GetComponent<SpriteRenderer>().sprite == Resources.Load<Sprite>("Illustrated/Arena") && g.Enemies.TrueForAll(e => e.Kind == EnemyKind.Scout), "Switching back restores original environment and roster");
             Check(profile.volatileOnly, "Verification profile cannot overwrite real player saves");
             checks.Add("NOTE Full-run test restores hull and forces any surviving boss defeat at 04:58; this is a progression test, not difficulty validation.");
             File.WriteAllLines(Path.Combine(folder, "smoke-results.txt"), checks); Debug.Log("PMA SMOKE " + (failed ? "FAILED" : "PASSED")); Application.Quit(failed ? 1 : 0);
@@ -137,6 +165,10 @@ namespace PocketMech
             CaptureFrame("03-upgrades.png"); yield return new WaitForSecondsRealtime(1);
             g.Finish(true); yield return null; CaptureFrame("05-rewards.png"); yield return new WaitForSecondsRealtime(.3f);
             g.UI.ShowBase(); yield return null; CaptureFrame("08-back-to-base.png");
+            g.UI.SelectArea(1); yield return null; CaptureFrame("09-frostline-select.png");
+            g.StageReviewEncounter(); g.Player.Automated = true; g.ApplyUpgrade(UpgradeKind.TripleShot);
+            for (int i = 0; i < 6; i++) g.Spawn(i % 3 == 0 ? EnemyKind.IceSkimmer : i % 3 == 1 ? EnemyKind.RailSentinel : EnemyKind.CryoMortar, new Vector2((i % 3 - 1) * 3, i / 3 * 3));
+            yield return new WaitForSecondsRealtime(1.1f); CaptureFrame("10-frostline-combat.png");
             Application.Quit();
         }
         void CaptureFrame(string name)
