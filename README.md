@@ -1,4 +1,6 @@
-# Pocket Mech Arena v0.4 — playable storyboard pass
+# Pocket Mech Arena — browser and Windows prototype
+
+**[Play in your browser](https://senseinatezz.github.io/pocket-mech-arena/)** — open in Safari on iPhone or a desktop browser, then tap **Load Game**. Phone hardware testing is ongoing. See [browser playtest notes](WEB-PLAYTEST.md).
 
 A real Unity game prototype following the illustrated Pocket Mech Arena concept and the first-five-minutes storyboard. Includes the illustrated arena and fluid combat from v0.3, plus connected mission selection, loadouts, garage progression, an elite encounter, later upgrades, bonus equipment and return-to-base flow.
 
