@@ -1,8 +1,10 @@
-# Pocket Mech Arena — v0.5.0
+# Pocket Mech Arena — v0.6.0
 
 [Play in your browser](https://senseinatezz.github.io/pocket-mech-arena/) — tap **Load Game**, then **Play**. Select **Arena A-1** or the new **Frostline** mission, choose difficulty and confirm your loadout.
 
 Frostline Reactor adds an icy arena, three new enemy machines and the Glacier Colossus boss. See [Frostline details](FROSTLINE-v05.md) for enemy behavior, timing, rewards, artwork and next work.
+
+The battle view now uses a raised rocky platform and angled camera. See [raised-view notes](RAISED-VIEW-v06.md). Existing machines and both missions remain available.
 
 ## Play
 
@@ -12,7 +14,7 @@ Frostline Reactor adds an icy arena, three new enemy machines and the Glacier Co
 - Collect XP and choose one of three upgrades while combat pauses.
 - Defeat the boss and survive five minutes to earn rewards.
 
-Both arenas have Standard and Veteran difficulty. Garage equipment, tuning, paint and currency persist between runs. Old saves keep their progress and default to Arena A-1. The public browser game is the current v0.5.0 build; the older downloadable Windows GitHub release is v0.4.0. Current Windows and Unity builds are also available in the local project outputs.
+Both arenas have Standard and Veteran difficulty. Garage equipment, tuning, paint and currency persist between runs. Old saves keep their progress and default to Arena A-1. The public browser game is the current v0.6.0 build; the older downloadable Windows GitHub release is v0.4.0. Current Windows and Unity builds are also available in the local project outputs.
 
 Open the browser link in Safari to test on iPhone. Physical iPhone performance and simultaneous-touch testing remain outstanding; see [browser notes](WEB-PLAYTEST.md). This is a prototype, not an App Store release.
 
