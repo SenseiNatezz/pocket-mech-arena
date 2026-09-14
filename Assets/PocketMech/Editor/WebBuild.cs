@@ -11,7 +11,7 @@ namespace PocketMech.Editor {
    PlayerSettings.WebGL.maximumMemorySize = 1024;
    PlayerSettings.WebGL.dataCaching = true;
    PlayerSettings.runInBackground = false;
-            PlayerSettings.bundleVersion = "0.6.0";
+            PlayerSettings.bundleVersion = "0.7.0";
    var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
     scenes = new[] {"Assets/PocketMech/Scenes/ArenaA1.unity"},
     locationPathName = "../PocketMechArena-Web", target = BuildTarget.WebGL,
