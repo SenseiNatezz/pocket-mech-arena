@@ -65,7 +65,7 @@ namespace PocketMech
                 if (enemy == null || !enemy.Alive || !Intersects((Vector2)enemy.transform.position - origin, direction, enemy.Radius)) continue;
                 Vector2 impact = enemy.transform.position;
                 enemy.Hurt(player.Damage * 8, direction, true);
-                Visuals.Burst(impact, new Color(.7f, .65f, 1), 12);
+                Visuals.Burst(impact, new Color(.05f, 1f, .9f), 12);
             }
             SoundBank.Play(4);
             if (!Game.Instance.Headless)
@@ -76,37 +76,60 @@ namespace PocketMech
         }
     }
 
-    // Layered beam, muzzle shockwave and jagged electric branches; no imported anime assets.
+    // Repulsor-style white core, soft turquoise halo and compact muzzle spray.
     public sealed class MagnumBeamEffect : MonoBehaviour
     {
+        static readonly Color Cyan = new Color(.02f, 1f, .88f);
         float age;
-        SpriteRenderer outer, middle, core, ring, flash;
-        Vector2 origin, aim;
-        LineRenderer[] arcs;
-        Material arcMaterial;
+        SpriteRenderer halo, sheath, core, flash;
+        SpriteRenderer[] sparks;
+        LineRenderer[] rays;
+        Material material;
+        Texture2D glowTexture;
+        Sprite glowSprite;
+        Vector2 origin, aim, side;
         public void Init(Vector2 start, Vector2 direction)
         {
-            origin = start; aim = direction;
-            outer = Beam("Violet corona", 1.7f, new Color(.52f, .25f, 1, .55f), 301);
-            middle = Beam("Cyan sheath", .85f, new Color(.2f, .8f, 1, .9f), 302);
-            core = Beam("White hot core", .27f, Color.white, 303);
-            var r = Visuals.Shape("Muzzle shock ring", transform, start, Vector2.one, Visuals.Blue, 304, true);
-            ring = r.GetComponent<SpriteRenderer>(); ring.sprite = Visuals.Ring;
-            flash = Visuals.Shape("Muzzle flash", transform, start, Vector2.one * 3, Color.white, 305, true).GetComponent<SpriteRenderer>(); flash.sprite = Visuals.Glow;
-            arcMaterial = new Material(Shader.Find("Sprites/Default")); arcs = new LineRenderer[3];
-            for (int a = 0; a < arcs.Length; a++)
+            origin = start; aim = direction; side = new Vector2(-aim.y, aim.x);
+            // Soft cross-section, but a straight continuous beam along its length.
+            glowTexture = new Texture2D(64, 128, TextureFormat.RGBA32, false);
+            var pixels = new Color[64 * 128];
+            for (int y = 0; y < 128; y++) for (int x = 0; x < 64; x++)
             {
-                var go = new GameObject("Electrical branch"); go.transform.SetParent(transform);
-                var line = go.AddComponent<LineRenderer>(); line.sharedMaterial = arcMaterial; line.positionCount = 13;
-                line.startWidth = .055f; line.endWidth = .018f; line.startColor = line.endColor = Visuals.Blue;
-                line.sortingOrder = 306; arcs[a] = line;
+                float cross = Mathf.Abs((x - 31.5f) / 31.5f);
+                float end = Mathf.Clamp01((127 - y) / 8f);
+                pixels[y * 64 + x] = new Color(1, 1, 1, Mathf.Pow(1 - cross, 2) * end);
+            }
+            glowTexture.SetPixels(pixels); glowTexture.Apply();
+            glowSprite = Sprite.Create(glowTexture, new Rect(0, 0, 64, 128), new Vector2(.5f, .5f), 64);
+            halo = Beam("Soft turquoise bloom", 2.2f, Cyan, 301, true);
+            sheath = Beam("Turquoise beam edge", .65f, Cyan, 302, false);
+            core = Beam("Continuous white core", .4f, new Color(.9f, 1f, 1f), 303, false);
+            flash = Visuals.Shape("Repulsor muzzle bloom", transform, start, Vector2.one * 2.3f, Cyan, 304, true).GetComponent<SpriteRenderer>();
+            flash.sprite = Visuals.Glow;
+            material = new Material(Shader.Find("Sprites/Default")); rays = new LineRenderer[8];
+            for (int i = 0; i < rays.Length; i++)
+            {
+                var go = new GameObject("Muzzle flare spike"); go.transform.SetParent(transform);
+                var line = go.AddComponent<LineRenderer>(); line.sharedMaterial = material; line.positionCount = 2;
+                line.startWidth = .2f; line.endWidth = .015f; line.startColor = Color.white; line.endColor = Cyan; line.sortingOrder = 305;
+                float angle = (i - 3.5f) * 11;
+                Vector2 ray = Quaternion.Euler(0, 0, angle) * aim;
+                line.SetPosition(0, origin); line.SetPosition(1, origin + ray * (1.2f + (i % 3) * .45f)); rays[i] = line;
+            }
+            sparks = new SpriteRenderer[26];
+            for (int i = 0; i < sparks.Length; i++)
+            {
+                var go = Visuals.Shape("Turquoise energy fleck", transform, start, new Vector2(.14f + (i % 3) * .04f, .08f), Cyan, 306);
+                Visuals.Aim(go.transform, aim); sparks[i] = go.GetComponent<SpriteRenderer>();
             }
             Animate(0);
         }
-        SpriteRenderer Beam(string name, float width, Color color, int order)
+        SpriteRenderer Beam(string name, float width, Color color, int order, bool soft)
         {
             var go = Visuals.Shape(name, transform, origin + aim * MagnumBlast.Range / 2,
-                new Vector2(width, MagnumBlast.Range), color, order);
+                new Vector2(width, soft ? MagnumBlast.Range / 2 : MagnumBlast.Range), color, order);
+            if (soft) go.GetComponent<SpriteRenderer>().sprite = glowSprite;
             Visuals.Aim(go.transform, aim); return go.GetComponent<SpriteRenderer>();
         }
         void Update()
@@ -117,23 +140,28 @@ namespace PocketMech
         }
         void Animate(float time)
         {
-            float fade = Mathf.Clamp01(1 - time / .55f), pulse = .7f + .3f * Mathf.Sin(time * 80);
-            Tint(outer, fade * .5f); Tint(middle, fade * .9f); Tint(core, fade);
-            core.transform.localScale = new Vector3(.27f * pulse * fade, MagnumBlast.Range, 1);
-            ring.transform.localScale = Vector3.one * (1 + time * 10); Tint(ring, fade);
-            flash.transform.localScale = Vector3.one * (1 + fade * 3); Tint(flash, fade);
-            Vector2 side = new Vector2(-aim.y, aim.x);
-            for (int a = 0; a < arcs.Length; a++)
+            float fade = Mathf.Clamp01((.55f - time) / .3f), pulse = .95f + .05f * Mathf.Sin(time * 60);
+            Tint(halo, fade * .85f); Tint(sheath, fade); Tint(core, fade);
+            core.transform.localScale = new Vector3(.4f * pulse, MagnumBlast.Range, 1);
+            flash.transform.localScale = Vector3.one * (2.5f - time * 2); Tint(flash, fade);
+            for (int i = 0; i < rays.Length; i++)
             {
-                var color = Visuals.Blue; color.a = fade; arcs[a].startColor = arcs[a].endColor = color;
-                for (int i = 0; i < 13; i++)
-                {
-                    float jitter = Mathf.Sin(i * 13.7f + a * 7.3f + Mathf.Floor(time * 24) * 2.4f);
-                    arcs[a].SetPosition(i, origin + aim * i + side * ((a - 1) * .55f + jitter * .45f));
-                }
+                var c = Cyan; c.a = fade; rays[i].endColor = c; c = Color.white; c.a = fade; rays[i].startColor = c;
+            }
+            for (int i = 0; i < sparks.Length; i++)
+            {
+                float forward = .4f + (i % 7) * .62f + time * (2 + i % 3);
+                float spread = (i % 2 == 0 ? 1 : -1) * (.35f + (i % 5) * .18f + time * .65f);
+                sparks[i].transform.position = origin + aim * forward + side * spread;
+                Tint(sparks[i], fade * (.5f + .5f * Mathf.Abs(Mathf.Sin(i * 3 + time * 18))));
             }
         }
         static void Tint(SpriteRenderer renderer, float alpha) { var c = renderer.color; c.a = alpha; renderer.color = c; }
-        void OnDestroy() { if (arcMaterial != null) Destroy(arcMaterial); }
+        void OnDestroy()
+        {
+            if (material != null) Destroy(material);
+            if (glowSprite != null) Destroy(glowSprite);
+            if (glowTexture != null) Destroy(glowTexture);
+        }
     }
 }

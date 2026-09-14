@@ -16,7 +16,7 @@ namespace PocketMech
         void Error(string message, string stack, LogType kind) { if (kind == LogType.Exception || kind == LogType.Error) { failed = true; checks.Add("RUNTIME ERROR " + message); } }
         IEnumerator Start()
         {
-            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v07")); Directory.CreateDirectory(folder);
+            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v071")); Directory.CreateDirectory(folder);
             Application.logMessageReceived += Error;
             yield return null;
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-pmaMotion") >= 0) { yield return MotionPreview(); yield break; }

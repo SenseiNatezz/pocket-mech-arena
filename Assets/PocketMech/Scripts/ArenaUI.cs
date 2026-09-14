@@ -56,7 +56,7 @@ namespace PocketMech
             dash = DashButton.GetComponentInChildren<Text>(); dash.fontSize = 45; dash.color = Visuals.Blue;
             var hint = Label(hud, "DASH", 12, Vector2.zero, new Vector2(100, 20), Color.white, true); Place(hint.rectTransform, new Vector2(1, 0), new Vector2(-93, 30), new Vector2(100, 20));
             BlastButton = ButtonAt(hud, "BLAST", new Vector2(1, 0), new Vector2(-93, 245), new Vector2(108, 92), () => Game.Instance.Player.Blast.TryActivate());
-            BlastButton.GetComponent<Image>().color = new Color(.22f, .12f, .42f); Border(BlastButton.transform, new Color(.6f, .5f, 1), 2);
+            BlastButton.GetComponent<Image>().color = new Color(.02f, .28f, .3f); Border(BlastButton.transform, new Color(.05f, 1f, .88f), 2);
             blast = BlastButton.GetComponentInChildren<Text>(); blast.fontSize = 20;
             banner = Label(hud, "", 26, Vector2.zero, new Vector2(490, 40), gold, true); Place(banner.rectTransform, new Vector2(.5f, 1), new Vector2(0, -212), new Vector2(500, 40));
             bannerSub = Label(hud, "", 14, Vector2.zero, new Vector2(490, 48), Color.white); Place(bannerSub.rectTransform, new Vector2(.5f, 1), new Vector2(0, -248), new Vector2(460, 48));
