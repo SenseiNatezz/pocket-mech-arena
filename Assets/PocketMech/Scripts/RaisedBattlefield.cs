@@ -19,7 +19,7 @@ namespace PocketMech
             for(int i=0;i<count;i++){
                 float angle=i*Mathf.PI*2/count,ripple=1+.022f*Mathf.Sin(i*5.7f)+.012f*Mathf.Cos(i*2.3f);
                 float contour=1/Mathf.Pow(Mathf.Abs(Mathf.Cos(angle))+Mathf.Abs(Mathf.Sin(angle)),.65f);
-                upper[i]=new Vector3(Mathf.Cos(angle)*8.45f*ripple*contour,Mathf.Sin(angle)*10.8f*ripple*contour,.2f);
+                upper[i]=new Vector3(Mathf.Cos(angle)*9.72f*ripple*contour,Mathf.Sin(angle)*12.42f*ripple*contour,.2f);
                 lower[i]=new Vector3(upper[i].x*.96f,upper[i].y*.96f,2.1f+.45f*Mathf.Sin(i*1.9f));
             }
             var floor=frozen?new Color(.30f,.37f,.43f):new Color(.27f,.25f,.24f);

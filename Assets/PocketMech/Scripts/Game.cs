@@ -172,7 +172,7 @@ namespace PocketMech
         public Vector2 Clamp(Vector2 p, float margin = .6f)
         {
             p = new Vector2(Mathf.Clamp(p.x, -balance.arenaHalfSize.x + margin, balance.arenaHalfSize.x - margin), Mathf.Clamp(p.y, -balance.arenaHalfSize.y + margin, balance.arenaHalfSize.y - margin));
-            float edge = Mathf.Abs(p.x) / Mathf.Max(1, 8.2f-margin) + Mathf.Abs(p.y) / Mathf.Max(1,10.5f-margin);
+            float edge = Mathf.Abs(p.x) / Mathf.Max(1, 9.4f-margin) + Mathf.Abs(p.y) / Mathf.Max(1,12.1f-margin);
             return edge > 1 ? p / edge : p;
         }
         public void EnemyKilled(Enemy e)

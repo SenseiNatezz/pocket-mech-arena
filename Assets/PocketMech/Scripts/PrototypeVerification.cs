@@ -16,7 +16,7 @@ namespace PocketMech
         void Error(string message, string stack, LogType kind) { if (kind == LogType.Exception || kind == LogType.Error) { failed = true; checks.Add("RUNTIME ERROR " + message); } }
         IEnumerator Start()
         {
-            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v071")); Directory.CreateDirectory(folder);
+            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v08")); Directory.CreateDirectory(folder);
             Application.logMessageReceived += Error;
             yield return null;
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-pmaMotion") >= 0) { yield return MotionPreview(); yield break; }
@@ -39,6 +39,9 @@ namespace PocketMech
             Check(!GameObject.Find("Painted environment").GetComponent<SpriteRenderer>().enabled, "Old flat arena picture is hidden during gameplay");
             Check(Vector3.Dot(Camera.main.transform.forward, Vector3.forward) < .85f && Camera.main.orthographic, "Camera uses an oblique orthographic view");
             Check(g.Player.GetComponent<ActorPresentation>() != null, "Existing mech artwork uses angled-view presentation");
+            Check(Camera.main.GetComponent<SpaceBackdrop>() != null, "Space backdrop is attached to the gameplay camera");
+            Check(Camera.main.orthographicSize < 15, "Camera is closer to the battlefield in portrait view");
+            Check(g.Clamp(new Vector2(7, 0)).x > 6.9f && g.Clamp(new Vector2(0, 11)).y > 10.9f, "Expanded arena bounds admit the newly added play area");
             var stick = g.UI.Joystick;
             Canvas.ForceUpdateCanvases();
             var point = RectTransformUtility.WorldToScreenPoint(null, stick.transform.TransformPoint(new Vector3(40, 0, 0)));
