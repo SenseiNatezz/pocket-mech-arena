@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PocketMech.Balance
   runSeconds: 300
   bossArrival: 260
-  arenaHalfSize: {x: 5.15, y: 9.65}
+  arenaHalfSize: {x: 9.4, y: 12.1}
   playerHealth: 1000
   playerSpeed: 5.2
   damage: 60
