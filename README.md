@@ -1,3 +1,9 @@
+# Version 0.7.0 — Magnum Blast
+
+Play: https://senseinatezz.github.io/pocket-mech-arena/?v=0.7.0
+
+Tap **BLAST** above Dash, or press **E**, for a charged piercing beam. 0.35-second charge, 12-second cooldown; movement stays responsive. Available in both missions. See [blast notes](MAGNUM-BLAST-v07.md).
+
 # Pocket Mech Arena — v0.6.0
 
 [Play in your browser](https://senseinatezz.github.io/pocket-mech-arena/) — tap **Load Game**, then **Play**. Select **Arena A-1** or the new **Frostline** mission, choose difficulty and confirm your loadout.
