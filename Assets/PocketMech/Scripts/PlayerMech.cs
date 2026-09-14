@@ -5,6 +5,7 @@ namespace PocketMech
     public sealed class PlayerMech : MonoBehaviour
     {
         public float Health, MaxHealth, Damage, Speed, FireInterval, DashCooldown, Shield;
+        public MagnumBlast Blast { get; private set; }
         public float DashRemaining { get; private set; }
         public bool Invulnerable => dashTime > 0 || hitGrace > 0;
         public bool IsDashing => dashTime > 0;
@@ -21,6 +22,7 @@ namespace PocketMech
         float fire, dashTime, hitGrace, side, missile, nano, barrier, trail;
         public void Init(Balance b)
         {
+            Blast = GetComponent<MagnumBlast>(); if (Blast == null) Blast = gameObject.AddComponent<MagnumBlast>(); Blast.ResetWeapon();
             transform.position = new Vector3(0, -3, 0); transform.rotation = Quaternion.identity;
             turret = transform.Find("Turret"); legs = transform.Find("Legs");
             if (thrusterLeft == null)

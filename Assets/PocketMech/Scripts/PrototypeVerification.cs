@@ -16,7 +16,7 @@ namespace PocketMech
         void Error(string message, string stack, LogType kind) { if (kind == LogType.Exception || kind == LogType.Error) { failed = true; checks.Add("RUNTIME ERROR " + message); } }
         IEnumerator Start()
         {
-            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v06")); Directory.CreateDirectory(folder);
+            folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Verification-v07")); Directory.CreateDirectory(folder);
             Application.logMessageReceived += Error;
             yield return null;
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-pmaMotion") >= 0) { yield return MotionPreview(); yield break; }
@@ -152,6 +152,25 @@ namespace PocketMech
             profile.area = 0; g.StartRun(); yield return null;
             Check(GameObject.Find("Painted environment").GetComponent<SpriteRenderer>().sprite == Resources.Load<Sprite>("Illustrated/Arena") && g.Enemies.TrueForAll(e => e.Kind == EnemyKind.Scout), "Switching back restores original environment and roster");
             Check(profile.volatileOnly, "Verification profile cannot overwrite real player saves");
+            g.Profile.mission = 0; g.StartRun(); p.enabled = false;
+            foreach (var e in g.Enemies.ToArray()) Destroy(e.gameObject); g.Enemies.Clear();
+            p.transform.position = new Vector3(0, -3, 0);
+            var blastNear = g.Spawn(EnemyKind.Shield, new Vector2(0, 0)); blastNear.enabled = false; blastNear.transform.up = Vector2.up;
+            var blastFar = g.Spawn(EnemyKind.Shield, new Vector2(0, 3)); blastFar.enabled = false; blastFar.transform.up = Vector2.up;
+            var blastMiss = g.Spawn(EnemyKind.Shield, new Vector2(4, 0)); blastMiss.enabled = false;
+            float nearHull = blastNear.Health, farHull = blastFar.Health, missHull = blastMiss.Health;
+            g.UI.BlastButton.onClick.Invoke();
+            Check(p.Blast.Charging && !p.Blast.TryActivate(), "Blast button starts charge and rejects repeated activation");
+            g.TogglePause(); float blastCooldown = p.Blast.Remaining;
+            for (int i = 0; i < 12; i++) yield return null;
+            Check(p.Blast.Shots == 0 && p.Blast.Remaining == blastCooldown, "Blast charge and cooldown freeze during pause");
+            g.TogglePause();
+            for (int i = 0; i < 10; i++) yield return null;
+            Check(p.Blast.Shots == 1 && (blastNear == null || blastNear.Health < nearHull) && (blastFar == null || blastFar.Health < farHull), "Charged blast pierces two aligned enemies exactly once");
+            Check(blastMiss.Health == missHull, "Blast leaves enemies outside its beam unharmed");
+            Check(!MagnumBlast.Intersects(new Vector2(0, 14), Vector2.up, .5f) && !MagnumBlast.Intersects(new Vector2(0, -3), Vector2.up, .5f), "Blast respects maximum range and does not fire backwards");
+            g.StartRun(); p.enabled = true;
+            Check(p.Blast.Remaining == 0 && !p.Blast.Charging && p.Blast.Shots == 0, "Restart resets blast charge and cooldown");
             checks.Add("NOTE Full-run test restores hull and forces any surviving boss defeat at 04:58; this is a progression test, not difficulty validation.");
             File.WriteAllLines(Path.Combine(folder, "smoke-results.txt"), checks); Debug.Log("PMA SMOKE " + (failed ? "FAILED" : "PASSED")); Application.Quit(failed ? 1 : 0);
         }
@@ -176,6 +195,8 @@ namespace PocketMech
             g.StageReviewEncounter(); g.Player.Automated = true; g.ApplyUpgrade(UpgradeKind.TripleShot);
             for (int i = 0; i < 6; i++) g.Spawn(i % 3 == 0 ? EnemyKind.IceSkimmer : i % 3 == 1 ? EnemyKind.RailSentinel : EnemyKind.CryoMortar, new Vector2((i % 3 - 1) * 3, i / 3 * 3));
             yield return new WaitForSecondsRealtime(1.1f); CaptureFrame("10-frostline-combat.png");
+            g.StageReviewEncounter(); g.Player.Automated = true; g.Player.enabled = false;
+            g.Player.Blast.TryActivate(); yield return new WaitForSeconds(.43f); CaptureFrame("11-magnum-blast.png");
             Application.Quit();
         }
         void CaptureFrame(string name)

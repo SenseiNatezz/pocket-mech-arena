@@ -7,6 +7,7 @@ namespace PocketMech
     public sealed class ArenaUI : MonoBehaviour
     {
         public VirtualJoystick Joystick { get; private set; }
+        public Button BlastButton { get; private set; }
         public Button DashButton { get; private set; }
         public Button StartButton { get; private set; }
         public Button MissionButton { get; private set; }
@@ -14,7 +15,7 @@ namespace PocketMech
         public Button ContinueButton { get; private set; }
         public Button[] UpgradeButtons { get; private set; }
         RectTransform safe, overlay, hud;
-        Text timer, health, level, dash, wave, banner, bannerSub, bossName;
+        Text blast, timer, health, level, dash, wave, banner, bannerSub, bossName;
         Image hpFill, xpFill, bossFill;
         GameObject bossPanel;
         float announceUntil;
@@ -54,6 +55,9 @@ namespace PocketMech
             DashButton.GetComponent<Image>().sprite = Visuals.Disc; DashButton.GetComponent<Image>().type = Image.Type.Simple; DashButton.GetComponent<Image>().color = new Color(.03f, .27f, .65f); Border(DashButton.transform, Visuals.Blue, 3);
             dash = DashButton.GetComponentInChildren<Text>(); dash.fontSize = 45; dash.color = Visuals.Blue;
             var hint = Label(hud, "DASH", 12, Vector2.zero, new Vector2(100, 20), Color.white, true); Place(hint.rectTransform, new Vector2(1, 0), new Vector2(-93, 30), new Vector2(100, 20));
+            BlastButton = ButtonAt(hud, "BLAST", new Vector2(1, 0), new Vector2(-93, 245), new Vector2(108, 92), () => Game.Instance.Player.Blast.TryActivate());
+            BlastButton.GetComponent<Image>().color = new Color(.22f, .12f, .42f); Border(BlastButton.transform, new Color(.6f, .5f, 1), 2);
+            blast = BlastButton.GetComponentInChildren<Text>(); blast.fontSize = 20;
             banner = Label(hud, "", 26, Vector2.zero, new Vector2(490, 40), gold, true); Place(banner.rectTransform, new Vector2(.5f, 1), new Vector2(0, -212), new Vector2(500, 40));
             bannerSub = Label(hud, "", 14, Vector2.zero, new Vector2(490, 48), Color.white); Place(bannerSub.rectTransform, new Vector2(.5f, 1), new Vector2(0, -248), new Vector2(460, 48));
             overlay = Panel("Menu Layer", safe, Color.clear, false); Stretch(overlay); ShowState();
@@ -68,6 +72,8 @@ namespace PocketMech
             wave.text = $"WAVE {Mathf.Min(5, (int)(g.Elapsed / 60) + 1)} / 5\nEnemies: {g.Enemies.Count}";
             dash.text = g.Player.DashRemaining > 0 ? g.Player.DashRemaining.ToString("0.0") : ">>";
             dash.fontSize = g.Player.DashRemaining > 0 ? 30 : 45; DashButton.interactable = g.Player.DashRemaining <= 0 && g.State == RunState.Playing;
+            blast.text = g.Player.Blast.Charging ? "CHARGE" : g.Player.Blast.Remaining > 0 ? g.Player.Blast.Remaining.ToString("0.0") : "BLAST [E]";
+            BlastButton.interactable = g.Player.Blast.Remaining <= 0 && g.State == RunState.Playing;
             bossName.text = g.Mission.BossName;
             bossPanel.SetActive(g.Boss != null && g.Boss.Alive); if (g.Boss != null) bossFill.fillAmount = g.Boss.Health / g.Boss.MaxHealth;
             if (Time.time > announceUntil) { banner.text = ""; bannerSub.text = ""; }
