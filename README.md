@@ -1,3 +1,7 @@
+# Version 0.7.1 — Turquoise Blast
+
+The blast now has a continuous white core, turquoise glow, sharp muzzle flare and scattered energy flecks, following the supplied reference. Tap BLAST or press E. [Play](https://senseinatezz.github.io/pocket-mech-arena/?v=0.7.1).
+
 # Version 0.7.0 — Magnum Blast
 
 Play: https://senseinatezz.github.io/pocket-mech-arena/?v=0.7.0

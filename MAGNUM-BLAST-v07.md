@@ -1,3 +1,7 @@
+# Visual revision 0.7.1
+
+Replaced the violet corona and long electrical branches with a clean white core, turquoise sheath, soft turquoise bloom, short muzzle flare spikes and drifting energy flecks. Updated the ability button to turquoise. Damage, range, charge time and cooldown remain as documented below. 64 checks passed.
+
 # Magnum Blast — Version 0.7.0
 
 Tap BLAST above Dash (or press E on desktop). The weapon locks the nearest enemy's direction, charges for 0.35 seconds, then fires from the moving mech. Without a target it fires along the turret's facing direction. Movement remains available throughout.
