@@ -1,0 +1,71 @@
+PASS 2D sprite presentation installed
+PASS No player 3D meshes, including hidden meshes
+PASS No player armature animation required
+PASS All 1768 rendered frames imported
+PASS Four booster sockets baked for every frame and direction
+PASS Foot and backpack jet sprites installed
+PASS Complete directions and muzzle data: Gundam_Hover moving=False
+PASS Complete directions and muzzle data: Gundam_MoveHover moving=False
+PASS Complete directions and muzzle data: Gundam_FlightAim moving=False
+PASS Complete directions and muzzle data: Gundam_FlightAim moving=True
+PASS Complete directions and muzzle data: Gundam_RifleAim moving=False
+PASS Complete directions and muzzle data: Gundam_RifleAim moving=True
+PASS Complete directions and muzzle data: Gundam_RifleFire moving=False
+PASS Complete directions and muzzle data: Gundam_RifleFire moving=True
+PASS Complete directions and muzzle data: Gundam_BeamCharge moving=False
+PASS Complete directions and muzzle data: Gundam_BeamCharge moving=True
+PASS Complete directions and muzzle data: Gundam_BeamFire moving=False
+PASS Complete directions and muzzle data: Gundam_BeamFire moving=True
+PASS Complete directions and muzzle data: Gundam_BeamRecovery moving=False
+PASS Complete directions and muzzle data: Gundam_BeamRecovery moving=True
+PASS Complete directions and muzzle data: Gundam_BoostStart moving=False
+PASS Complete directions and muzzle data: Gundam_BoostStop moving=False
+PASS Complete directions and muzzle data: Gundam_BoostDash moving=False
+PASS Facing direction 0
+PASS Facing direction 1
+PASS Facing direction 2
+PASS Facing direction 3
+PASS Facing direction 4
+PASS Facing direction 5
+PASS Facing direction 6
+PASS Facing direction 7
+PASS Eight distinct directional sprites
+PASS Matching attack boundary Gundam_RifleAim to Gundam_BeamCharge moving=False
+PASS Matching attack boundary Gundam_BeamCharge to Gundam_BeamFire moving=False
+PASS Matching attack boundary Gundam_BeamFire to Gundam_BeamRecovery moving=False
+PASS Matching attack boundary Gundam_BeamRecovery to Gundam_RifleAim moving=False
+PASS Matching attack boundary Gundam_RifleAim to Gundam_RifleFire moving=False
+PASS Matching attack boundary Gundam_RifleAim to Gundam_BeamCharge moving=True
+PASS Matching attack boundary Gundam_BeamCharge to Gundam_BeamFire moving=True
+PASS Matching attack boundary Gundam_BeamFire to Gundam_BeamRecovery moving=True
+PASS Matching attack boundary Gundam_BeamRecovery to Gundam_RifleAim moving=True
+PASS Matching attack boundary Gundam_RifleAim to Gundam_RifleFire moving=True
+PASS Movement uses Blender hover sprites
+PASS Full body flight frames animate while moving
+PASS Moving boost ignites four jets
+PASS Boost stop settles into idle hover
+PASS Exhaust settles to idle after stopping
+PASS Dash works with sprites
+PASS Dash tucks legs and flares exhaust
+PASS Normal rifle fires after sprite aim
+PASS Normal shot starts at rendered rifle muzzle
+PASS Shot retains muzzle height
+PASS Attack sprites retain floating leg pose during movement
+PASS Torso and head keep moving while holding rifle aim
+PASS Whole body banks into lateral movement while aiming
+PASS Bank smoothly settles when movement stops
+PASS Beam charge activates
+PASS Cooldown blocks duplicate beam
+PASS Pause freezes sprite animation and cooldown
+PASS Pause freezes jet animation
+PASS Pause freezes full-body flight transform
+PASS Beam fires once and damages target
+PASS Beam excludes off-axis enemy
+PASS Beam effect visible
+PASS Beam follows per-frame sprite muzzle
+PASS Sprite recovery completes and beam clears
+PASS Only the Gundam body and its jets render on the player
+PASS Rifle lowers through reversed aim frames when target is gone
+PASS Lowering returns cleanly to hover
+PASS Restart resets sprite and beam state
+PASS Recorded 12 seconds at 30 fps: hover, turns, dash, moving aim and stop
