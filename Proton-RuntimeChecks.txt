@@ -1,0 +1,112 @@
+PASS 2D sprite presentation installed
+PASS No player 3D meshes, including hidden meshes
+PASS No player armature animation required
+PASS All 7648 rendered frames imported
+PASS Four booster sockets baked for every frame and direction
+PASS Foot and backpack jet sprites installed
+PASS Complete directions and muzzle data: Gundam_Hover moving=False
+PASS Complete directions and muzzle data: Gundam_MoveHover moving=False
+PASS Complete directions and muzzle data: Gundam_FlightAim moving=False
+PASS Complete directions and muzzle data: Gundam_FlightAim moving=True
+PASS Complete directions and muzzle data: Gundam_RifleAim moving=False
+PASS Complete directions and muzzle data: Gundam_RifleAim moving=True
+PASS Complete directions and muzzle data: Gundam_RifleFire moving=False
+PASS Complete directions and muzzle data: Gundam_RifleFire moving=True
+PASS Complete directions and muzzle data: Gundam_BeamCharge moving=False
+PASS Complete directions and muzzle data: Gundam_BeamCharge moving=True
+PASS Complete directions and muzzle data: Gundam_BeamFire moving=False
+PASS Complete directions and muzzle data: Gundam_BeamFire moving=True
+PASS Complete directions and muzzle data: Gundam_BeamRecovery moving=False
+PASS Complete directions and muzzle data: Gundam_BeamRecovery moving=True
+PASS Complete directions and muzzle data: Gundam_BoostStart moving=False
+PASS Complete directions and muzzle data: Gundam_BoostStop moving=False
+PASS Complete directions and muzzle data: Gundam_BoostDash moving=False
+PASS Smooth facing settles at direction 0
+PASS Smooth facing settles at direction 1
+PASS Smooth facing settles at direction 2
+PASS Smooth facing settles at direction 3
+PASS Smooth facing settles at direction 4
+PASS Smooth facing settles at direction 5
+PASS Smooth facing settles at direction 6
+PASS Smooth facing settles at direction 7
+PASS Smooth facing settles at direction 8
+PASS Smooth facing settles at direction 9
+PASS Smooth facing settles at direction 10
+PASS Smooth facing settles at direction 11
+PASS Smooth facing settles at direction 12
+PASS Smooth facing settles at direction 13
+PASS Smooth facing settles at direction 14
+PASS Smooth facing settles at direction 15
+PASS Smooth facing settles at direction 16
+PASS Smooth facing settles at direction 17
+PASS Smooth facing settles at direction 18
+PASS Smooth facing settles at direction 19
+PASS Smooth facing settles at direction 20
+PASS Smooth facing settles at direction 21
+PASS Smooth facing settles at direction 22
+PASS Smooth facing settles at direction 23
+PASS Smooth facing settles at direction 24
+PASS Smooth facing settles at direction 25
+PASS Smooth facing settles at direction 26
+PASS Smooth facing settles at direction 27
+PASS Smooth facing settles at direction 28
+PASS Smooth facing settles at direction 29
+PASS Smooth facing settles at direction 30
+PASS Smooth facing settles at direction 31
+PASS 32 distinct 2D facing directions
+PASS Intermediate facing blends adjacent views instead of snapping
+PASS Interpolated sprite shader is supported
+PASS Turning crosses 360 degrees by the short smooth path
+PASS Facing speed stays bounded during a turn
+PASS Animation interpolates between authored poses every render frame
+PASS Matching attack boundary Gundam_RifleAim to Gundam_BeamCharge moving=False
+PASS Matching attack boundary Gundam_BeamCharge to Gundam_BeamFire moving=False
+PASS Matching attack boundary Gundam_BeamFire to Gundam_BeamRecovery moving=False
+PASS Matching attack boundary Gundam_BeamRecovery to Gundam_RifleAim moving=False
+PASS Matching attack boundary Gundam_RifleAim to Gundam_RifleFire moving=False
+PASS Matching attack boundary Gundam_RifleAim to Gundam_BeamCharge moving=True
+PASS Matching attack boundary Gundam_BeamCharge to Gundam_BeamFire moving=True
+PASS Matching attack boundary Gundam_BeamFire to Gundam_BeamRecovery moving=True
+PASS Matching attack boundary Gundam_BeamRecovery to Gundam_RifleAim moving=True
+PASS Matching attack boundary Gundam_RifleAim to Gundam_RifleFire moving=True
+PASS Movement keeps rifle raised in animated flight
+PASS Full body flight frames animate while moving
+PASS Moving boost ignites four jets
+PASS Stopping keeps rifle raised in idle flight
+PASS Exhaust settles to idle after stopping
+PASS Dash works with sprites
+PASS Dash keeps rifle raised and flares exhaust
+PASS Normal rifle fires after sprite aim
+PASS Normal shot starts at rendered rifle muzzle
+PASS Shot retains muzzle height
+PASS Attack sprites retain floating leg pose during movement
+PASS Torso and head keep moving while holding rifle aim
+PASS Whole body banks into lateral movement while aiming
+PASS Bank smoothly settles when movement stops
+PASS Beam charge activates
+PASS Cooldown blocks duplicate beam
+PASS Pause freezes sprite animation and cooldown
+PASS Pause freezes jet animation
+PASS Pause freezes full-body flight transform
+PASS Pause freezes turn and frame interpolation
+PASS Beam fires once and damages target
+PASS Beam excludes off-axis enemy
+PASS Beam effect visible
+PASS Beam follows per-frame sprite muzzle
+PASS Proton blast sustains its beam and firing pose
+PASS Sustained blast damages each enemy only once per activation
+PASS Pause freezes the sustained beam envelope
+PASS Sprite recovery completes and beam clears
+PASS Only the Gundam body and its jets render on the player
+PASS Rifle stays raised continuously after all targets disappear
+PASS Raised idle pose is immediately ready to fire
+PASS Restart resets beam and starts with rifle raised
+PASS Storyboard: five-minute run and boss at 04:20
+PASS Storyboard upgrade cards for level 2
+PASS Storyboard upgrade cards for level 3
+PASS Storyboard upgrade cards for level 4
+PASS Storyboard upgrade cards for level 5
+PASS Storyboard upgrade cards for level 6
+PASS Preview proton blast activates
+PASS Preview proton blast activates
+PASS Recorded two proton blasts in 12 seconds at 60 fps
